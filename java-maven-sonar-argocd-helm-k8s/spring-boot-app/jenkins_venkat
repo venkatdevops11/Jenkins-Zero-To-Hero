@@ -13,17 +13,20 @@ pipeline {
           sh 'cd java-maven-sonar-argocd-helm-k8s/spring-boot-app && mvn test && mvn clean package'
               }
           }
-       stage('Static Code Analysis') {
+      stage('Static Code Analysis') {
 	  environment {
-	     SONAR_URL = 'http://104.198.230.37:9000'
-                      }
-            steps {
-	      withCredentials([string(credentialsId: 'sonarqube', variable: 'SONAR_AUTH_TKEN')]) {
-              sh 'cd java-maven-sonar-argocd-helm-k8s/spring-boot-app && mvn sonar:sonar -Dsonar.login=$SONAR_AUTH_TOKEN -Dsonar.host.url=${SONAR_URL}'
-	          }
-                }
-              }
-       stage('Creating Docker image') {
+              SONAR_URL = "http://104.198.230.37:9000"
+	      SONAR_PROJECT_KEY = 'sonar-demo'
+	      SONAR_PROJECT_NAME = 'sonar-demo'
+            }
+          steps {
+	     withCredentials([string(credentailsId: 'sonarqube', variable: 'SONAR_AUTH_TKEN')]) {
+	     sh 'cd java-maven-sonar-argocd-helm-k8s/spring-boot-app && mvn sonar:sonar -Dsonar.projectName=${SONAR_PROJECT_NAME} -Dsonar.projectKey=${SONAR_PROJECT_KEY} -Dsonar.login=$SONAR_AUTH_TOKEN  -Dsonar.host.url=${SONAR_URL}'
+	        }
+	}
+    } 
+      
+      stage('Creating Docker image') {
          steps {
            sh 'sudo docker rmi --force $REPONAME:${BUILD_NUMBER}'
            sh 'cd java-maven-sonar-argocd-helm-k8s/spring-boot-app && sudo docker build -t $REPONAME:${BUILD_NUMBER} .'
