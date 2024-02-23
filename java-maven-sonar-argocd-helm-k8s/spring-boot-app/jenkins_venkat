@@ -20,7 +20,7 @@ pipeline {
 	      SONAR_PROJECT_NAME = 'sonar-demo'
             }
           steps {
-	     withCredentials([string(credentailsId: 'sonarqube', variable: 'SONAR_AUTH_TKEN')]) {
+	     withCredentials([string(credentialsId: 'sonarqube', variable: 'SONAR_AUTH_TKEN')]) {
 	     sh 'cd java-maven-sonar-argocd-helm-k8s/spring-boot-app && mvn sonar:sonar -Dsonar.projectName=${SONAR_PROJECT_NAME} -Dsonar.projectKey=${SONAR_PROJECT_KEY} -Dsonar.login=$SONAR_AUTH_TOKEN  -Dsonar.host.url=${SONAR_URL}'
 	        }
 	}
