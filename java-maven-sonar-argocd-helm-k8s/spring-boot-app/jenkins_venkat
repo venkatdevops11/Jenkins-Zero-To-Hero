@@ -10,7 +10,7 @@ pipeline {
     stages {
        stage('Building the code') {
 	steps {
-          sh 'cd java-maven-sonar-argocd-helm-k8s/spring-boot-app && mvn test && mvn clean package'
+          sh 'cd java-maven-sonar-argocd-helm-k8s/spring-boot-app && mvn clean package'
               }
           }
        stage('Static Code Analysis') {
