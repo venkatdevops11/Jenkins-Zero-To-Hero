@@ -15,8 +15,9 @@ pipeline {
           }
        stage('Creating Docker image') {
          steps {
+           sh 'sudo docker rmi --force $REPONAME:${BUILD_NUMBER}'
            sh 'cd java-maven-sonar-argocd-helm-k8s/spring-boot-app && sudo docker build -t $REPONAME:${BUILD_NUMBER} .'
-                  }
+               }
           }
        stage('Authenticating with Dockerhub') {
          steps {
@@ -30,7 +31,8 @@ pipeline {
 	  }
        stage('Launching the container') {
          steps {
-           sh 'sudo docker run -d -p 80:80 --name spring-be $REPONAME:${BUILD_NUMBER}'
+           sh 'docker container rm --force spring-be'
+           sh 'sudo docker run -d -p 8010:8080 --name spring-be $REPONAME:${BUILD_NUMBER}'
 	       }
           }
      }
