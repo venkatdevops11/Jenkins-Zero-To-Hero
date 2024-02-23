@@ -14,17 +14,10 @@ pipeline {
               }
           }
       stage('Static Code Analysis') {
-	  environment {
-              SONAR_URL = "http://104.198.230.37:9000"
-	      SONAR_PROJECT_KEY = 'sonar-demo'
-	      SONAR_PROJECT_NAME = 'sonar-demo'
-            }
           steps {
-	     withCredentials([string(credentialsId: 'sonarqube', variable: 'SONAR_AUTH_TKEN')]) {
-	     sh 'cd java-maven-sonar-argocd-helm-k8s/spring-boot-app && mvn sonar:sonar -Dsonar.projectName=${SONAR_PROJECT_NAME} -Dsonar.projectKey=${SONAR_PROJECT_KEY} -Dsonar.login=$SONAR_AUTH_TOKEN  -Dsonar.host.url=${SONAR_URL}'
+            sh 'cd java-maven-sonar-argocd-helm-k8s/spring-boot-app && sudo docker container run --rm --name sonarscanner -e SONAR_SCANNER_OPTS="-Dsonar.projectKey=sonar-demo" -e SONAR_HOST_URL="http://104.198.230.37:9000" -e SONAR_TOKEN="sqp_97a2964eb341c0c255c354228c8bb23161f94ed7" -v ".:/usr/src" sonarsource/sonar-scanner-cli'
 	        }
 	}
-    } 
       
       stage('Creating Docker image') {
          steps {
