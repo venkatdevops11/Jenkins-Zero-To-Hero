@@ -10,14 +10,12 @@ pipeline {
     stages {
        stage('Building the code') {
 	steps {
-          sh 'cd java-maven-sonar-argocd-helm-k8s/spring-boot-app'
-          sh 'mvn test && mvn clean package'
+          sh 'cd java-maven-sonar-argocd-helm-k8s/spring-boot-app && mvn test && mvn clean package'
               }
           }
        stage('Creating Docker image') {
          steps {
-           sh 'cd java-maven-sonar-argocd-helm-k8s/spring-boot-app'
-           sh 'sudo docker build -t $REPONAME:${BUILD_NUMBER} .'
+           sh 'cd java-maven-sonar-argocd-helm-k8s/spring-boot-app && sudo docker build -t $REPONAME:${BUILD_NUMBER} .'
                   }
           }
        stage('Authenticating with Dockerhub') {
