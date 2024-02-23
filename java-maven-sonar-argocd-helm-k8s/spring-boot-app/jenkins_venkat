@@ -13,6 +13,15 @@ pipeline {
           sh 'cd java-maven-sonar-argocd-helm-k8s/spring-boot-app && mvn test && mvn clean package'
               }
           }
+       stage('Static Code Analysis') {
+	  environment {
+	     SONAR_URL = 'http://104.198.230.37:9000'
+                      }
+            steps {
+	      withCredentials([string(credentailsId: 'sonarqube', variable: 'SONAR_AUTH_TKEN')])
+              sh 'cd java-maven-sonar-argocd-helm-k8s/spring-boot-app && mvn sonar:sonar -Dsonar.login=$SONAR_AUTH_TOKEN -Dsonar.host.url=$SONAR_URL'
+	          }
+              }
        stage('Creating Docker image') {
          steps {
            sh 'sudo docker rmi --force $REPONAME:${BUILD_NUMBER}'
